@@ -50,6 +50,7 @@ public class Server {
                     clientHandler.bufferedWriter.write(massage);
                     clientHandler.bufferedWriter.newLine();
                     clientHandler.bufferedWriter.flush();
+
                 }
             }
             catch (IOException e){
@@ -72,6 +73,7 @@ public class Server {
 
         } catch (IOException e) {
             throw new RuntimeException(e);
+
         }
     }
 
@@ -98,8 +100,9 @@ public class Server {
 
         }
         catch(IOException e){
-
+            System.out.println("eror");
         }
 
     }
+
 }
