@@ -1,32 +1,34 @@
 package org.example.socket_programing_fxver;
 
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
+import java.io.IOException;
+
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.text.Text;
 
 import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
 
 // Client Class
-public class Client {
-    protected final Socket socket;
+public class Client extends Application{
+    protected Socket socket;
     protected BufferedReader bufferedReader;
     protected BufferedWriter bufferedWriter;
+    public static Client client;
 
     private String userName ;
 
 
 
-    public Client(Socket socket,String userName){
-        try {
-
-            this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-            this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
-            this.userName = userName;
-        }catch(IOException e){
-                closeConnection(socket,bufferedReader,bufferedWriter);
-        }
-        this.socket = socket;
-
+    public Client(){
     }
 
     public Client(Socket socket) {
@@ -67,25 +69,70 @@ public class Client {
 
     }
 public void sendMassage(){
+    new Thread((new Runnable() {
+        @Override
+        public void run() {
+            try {
+
+                bufferedWriter.write(userName);
+                bufferedWriter.newLine();
+                bufferedWriter.flush();
+
+                Scanner scanner = new Scanner( System.in);
+                while (socket.isConnected()){
+                    String massageToSend = scanner.nextLine();
+                    bufferedWriter.write(massageToSend);
+                    bufferedWriter.newLine();
+                    bufferedWriter.flush();
+                }
+
+            }
+            catch (IOException e){
+                closeConnection(socket, bufferedReader,bufferedWriter);
+            }
+
+        }
+    })).start();
+}
+    public void sendMassage(String messageToSend){
         try {
 
             bufferedWriter.write(userName);
             bufferedWriter.newLine();
             bufferedWriter.flush();
 
-            Scanner scanner = new Scanner( System.in);
-            while (socket.isConnected()){
-                 String massageToSend = scanner.nextLine();
-                 bufferedWriter.write(massageToSend);
-                 bufferedWriter.newLine();
-                 bufferedWriter.flush();
-            }
+
+
+            bufferedWriter.write(messageToSend);
+            bufferedWriter.newLine();
+            bufferedWriter.flush();
+
 
         }
         catch (IOException e){
             closeConnection(socket, bufferedReader,bufferedWriter);
         }
-}
+    }
+
+
+    @FXML
+    public Text txt1;
+    @FXML
+    public Text txt2;
+    @FXML
+    public Text txt3;
+    @FXML
+    public Button sendButton;
+    @FXML
+    public TextField txtBar;
+
+    @FXML
+    protected void sendMessage() {
+        client.sendMassage(txtBar.getText());
+    }
+
+
+
 public void receiveMassage(){
         new Thread((new Runnable() {
             @Override
@@ -107,19 +154,48 @@ public void receiveMassage(){
             }
         })).start();
 }
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter your username:");
-        String userNameInput = scanner.nextLine();
 
+    @Override
+    public void start(Stage stage) throws IOException {
         try {
-            Socket socket1 = new Socket("localhost",4444);
-            Client client = new Client(socket1,userNameInput);
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("Enter your username:");
+            String userNameInput = scanner.nextLine();
+
+
+            client = new Client();
+
+
+            client.socket = new Socket("localhost", 4444);
+
+            try {
+                client.bufferedWriter = new BufferedWriter(new OutputStreamWriter(client.socket.getOutputStream()));
+                client.bufferedReader = new BufferedReader(new InputStreamReader(client.socket.getInputStream()));
+
+                client.userName = userNameInput;
+            } catch (IOException e) {
+                client.closeConnection(socket, bufferedReader, bufferedWriter);
+            }
             client.receiveMassage();
             client.sendMassage();
+            FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
+            Scene scene = new Scene(fxmlLoader.load(), 500, 500);
+            stage.setTitle("Hello!");
+            stage.setScene(scene);
+            stage.show();
+
+
 
         }
-        catch (IOException e){}
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
+
+    }
+    public static void main(String[] args) {
+
+        launch();
 
     }
 }
