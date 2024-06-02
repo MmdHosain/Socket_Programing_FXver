@@ -44,6 +44,28 @@ public class Client {
             throw new RuntimeException(e);
         }
     }
+    public void readFile(){
+
+                try {
+                    File file = new File("D:\\AP\\Socket_Programing_FXver\\src\\main\\java\\org\\example\\socket_programing_fxver\\client_data\\downloaded_file.txt");
+
+
+                    FileOutputStream fileOutputStream = new FileOutputStream(file);
+                    DataInputStream dataIn = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
+                    byte[] bytes = new byte[1024];
+//                    String order = bufferedReader.readLine();
+//                    if (order.equals("/sending")) {
+                        dataIn.read(bytes);
+                        fileOutputStream.write(bytes);
+                        System.out.println("downloaded file saved");
+//                    }
+
+                }catch (IOException e){
+                    System.out.println("there was a problem in saving downloaded file");
+                }
+
+
+    }
 public void sendMassage(){
         try {
 
@@ -73,6 +95,10 @@ public void receiveMassage(){
                     try {
                         receivedMassage = bufferedReader.readLine();
                         System.out.println(receivedMassage);
+
+                        if(receivedMassage.equals("/readFile")){
+                            readFile();
+                        }
                     }
                     catch (IOException e){
                         closeConnection(socket,bufferedReader,bufferedWriter);
