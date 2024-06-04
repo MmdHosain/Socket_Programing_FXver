@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Text?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="693.0" prefWidth="598.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.socket_programing_fxver.Client">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="693.0" prefWidth="598.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.socket_programing_fxver.HelloController">
     <children>
       <TextField fx:id="txtBar" layoutX="52.0" layoutY="617.0" prefHeight="25.0" prefWidth="418.0" />
-      <Text fx:id="txt1" layoutX="14.0" layoutY="347.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="214.13671875" />
-      <Text fx:id="txt2" layoutX="13.0" layoutY="288.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="214.13671875" />
-      <Text fx:id="txt3" layoutX="13.0" layoutY="218.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="140.13671875" />
       <Button fx:id="sendButton" layoutX="487.0" layoutY="617.0" mnemonicParsing="false" onAction="#sendMessage" text="Button" />
+        <ScrollPane layoutX="52.0" layoutY="50.0" prefHeight="540.0" prefWidth="494.0">
+            <content>
+                <VBox fx:id="chatHistory" />
+            </content>
+        </ScrollPane>
    </children>
 </AnchorPane>
